@@ -6,29 +6,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = __importDefault(require("http"));
 const fs_1 = __importDefault(require("fs"));
 const mime_types_1 = __importDefault(require("mime-types"));
-const hostname = 'localhost';
-const port = 3000;
 let lookup = mime_types_1.default.lookup;
-const server = http_1.default.createServer((req, res) => {
-    let parsedURL = new URL(req.url, "http://" + hostname + ":" + port);
-    let path = parsedURL.pathname.replace(/^\/+|\/+$/g, "");
-    if (path == "") {
-        path = "index.html";
+const port = process.env.PORT || 3000;
+const server = http_1.default.createServer(function (req, res) {
+    let path = req.url;
+    if (path == "/") {
+        path = "/index.html";
     }
-    let file = __dirname + "\\" + path;
-    fs_1.default.readFile(file, function (err, content) {
+    let mime_type = lookup(path.substring(1));
+    console.log(path);
+    fs_1.default.readFile(__dirname + path, function (err, data) {
         if (err) {
             res.writeHead(404);
-            res.end(JSON.stringify(err));
+            res.end("ERROR: 404 - File Note Found! " + err.message);
             return;
         }
         res.setHeader("X-Content-Type-Options", "nosniff");
-        let mimeType = lookup(path);
-        res.writeHead(200, "", { "Content-Type": mimeType });
-        res.end(content);
+        res.writeHead(200, { "Content-Type": mime_type });
+        res.end(data);
     });
 });
-server.listen(port, hostname, function () {
-    console.log(`Server running at http://${hostname}:${port}/`);
+server.listen(port, function () {
+    console.log(`Server running on Port: ${port}`);
 });
 //# sourceMappingURL=server.js.map

@@ -1,41 +1,40 @@
 import http from 'http';
 import fs from 'fs';
-import url from 'url';
-import mime from 'mime-types';
+import mime from 'mime-types'; // third-party module
 
-const hostname: string = 'localhost';
-const port: number = 3000;
-let lookup = mime.lookup; // alias for mime.lookup
+let lookup = mime.lookup; // alias for the lookup function
 
-// create a server object (Immutable)
-const server = http.createServer((req, res) => 
+const port = process.env.PORT || 3000;
+
+// Creates a Server Instance (Immutable)
+const server = http.createServer(function(req, res)
 {
-  let parsedURL = new URL(req.url as string, "http://" + hostname + ":" + port);
-  let path = parsedURL.pathname.replace(/^\/+|\/+$/g, "");
+  let path = req.url as string;
 
-  if (path == "") {
-    path = "index.html";
+  if(path == "/")
+  {
+    path = "/index.html";
   }
 
-  let file = __dirname + "\\" + path;
+  let mime_type = lookup(path.substring(1)) as string;
 
-  fs.readFile(file, function (err, content) {
-    if (err) 
-    {
-      res.writeHead(404); // file not found
-      res.end(JSON.stringify(err));
+  console.log(path);
+
+  fs.readFile(__dirname + path, function(err, data)
+  {
+    if (err) {
+      res.writeHead(404);
+      res.end("ERROR: 404 - File Note Found! " + err.message);
       return;
     }
-    res.setHeader("X-Content-Type-Options", "nosniff");
-    let mimeType = lookup(path) as string;
-    res.writeHead(200, "", { "Content-Type": mimeType });
-    res.end(content);
+    res.setHeader("X-Content-Type-Options", "nosniff"); // security
+    res.writeHead(200, { "Content-Type": mime_type });
+    res.end(data);
   });
 });
 
-// creating an event listener
-server.listen(port, hostname, function() 
+// add an event listener
+server.listen(port, function() 
 {
-  console.log(`Server running at http://${hostname}:${port}/`);
+  console.log(`Server running on Port: ${port}`);
 });
-
