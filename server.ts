@@ -1,8 +1,17 @@
+/*
+* ICE 9
+* Adonai Ford-Williams
+* March 18th, 2022
+* Durham College
+*/
+
 import http from 'http';
 import fs from 'fs';
-import mime from 'mime-types'; // third-party module
+// third-party module
+import mime from 'mime-types'; 
 
-let lookup = mime.lookup; // alias for the lookup function
+// alias for the lookup function
+let lookup = mime.lookup; 
 
 const port = process.env.PORT || 3000;
 
