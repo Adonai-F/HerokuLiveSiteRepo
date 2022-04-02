@@ -1,10 +1,15 @@
 #!/usr/bin/env node
-
+/*
+* ICE 11
+* Adonai Ford-Williams
+* April 1st, 2022
+* Durham College
+*/
 /**
  * Module dependencies.
  */
 
-import app from "./app";
+import app from "./Config/app";
 import debug from "debug";
 debug("temp:server");
 import http from "http";
