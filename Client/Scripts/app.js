@@ -116,37 +116,6 @@
     }
     function DisplayLoginPage() {
         console.log("Login Page");
-        let messageArea = $("#messageArea");
-        messageArea.hide();
-        AddLinkEvents("register");
-        $("#loginButton").on("click", function () {
-            let success = false;
-            let newUser = new core.User();
-            $.get("./Data/users.json", function (data) {
-                for (const user of data.users) {
-                    let username = document.forms[0].username.value;
-                    let password = document.forms[0].password.value;
-                    if (username == user.Username && password == user.Password) {
-                        newUser.fromJSON(user);
-                        success = true;
-                        break;
-                    }
-                }
-                if (success) {
-                    sessionStorage.setItem("user", newUser.serialize());
-                    messageArea.removeAttr("class").hide();
-                    location.href = "/contact-list";
-                }
-                else {
-                    $("#username").trigger("focus").trigger("select");
-                    messageArea.addClass("alert alert-danger").text("Error: Invalid Login Information.").show();
-                }
-            });
-            $("#cancelButtton").on("click", function () {
-                document.forms[0].reset();
-                location.href = "/home";
-            });
-        });
     }
     function DisplayRegisterPage() {
         console.log("Register Page");
@@ -156,7 +125,6 @@
     function Start() {
         console.log("App Started!!");
         let page_id = $("body")[0].getAttribute("id");
-        CheckLogin();
         switch (page_id) {
             case "home":
                 DisplayHomePage();
